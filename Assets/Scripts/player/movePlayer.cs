@@ -36,4 +36,12 @@ public class movePlayer : MonoBehaviour {
       
 
     }
-}
+
+    void OnCollisionEnter(Collision collider)
+    {
+        if (collider.collider.tag == "enemy")
+        {
+            game.gameOver();
+        }
+    }
+        }
