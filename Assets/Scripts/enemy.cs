@@ -5,6 +5,7 @@ public class enemy : MonoBehaviour {
 
     public int points = 10;
     public float speed = 10f;
+    public float speedDown = 5f;
     
     private static int n_enemies = 0;
     private static bool right = true;
@@ -40,8 +41,7 @@ public class enemy : MonoBehaviour {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         for (int i = 0; i < enemies.Length; i++)
         {
-            enemies[i].transform.Translate(0, -5, 0);
-            //enemies[i].GetComponent<Collider>().transform.Translate(0, -5, 0);
+            enemies[i].transform.Translate(0, - speedDown, 0);
         }
     }
 

@@ -18,4 +18,9 @@ public class updatePoints : MonoBehaviour {
         points_ += points;
         score.text = points_.ToString();
     }
+
+    public static int getPoints ()
+    {
+        return points_;
+    }
 }
