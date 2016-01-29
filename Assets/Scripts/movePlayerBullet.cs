@@ -17,7 +17,13 @@ public class movePlayerBullet : MonoBehaviour {
     {
         if ((collider.tag == "roof") || (collider.tag == "Enemy"))
         {
-            Destroy(this.gameObject);
+            Destroy (this.gameObject);
+        }
+
+        if (collider.tag == "defense")
+        {
+            Destroy(collider.gameObject);
+            Destroy (this.gameObject);
         }
     }
 }
