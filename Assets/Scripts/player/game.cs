@@ -19,7 +19,7 @@ public class game : MonoBehaviour {
             updateLife.update();
         }
 
-        else
+        if (lifes <= 0)
         {
             gameOver();
         }
@@ -30,7 +30,7 @@ public class game : MonoBehaviour {
         lifes = 0;
         updateLife.update();
         Time.timeScale = 0;
-        //mostrar menu o hacer algo
+        updateGameOver.show();
     }
 
     public static int getLifes ()

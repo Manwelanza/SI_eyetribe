@@ -7,6 +7,8 @@ public class shoot : MonoBehaviour {
     public GameObject shooter;
     public float delayShoot = 0.5f;
     public float delayStart = 0f;
+    public bool random = false;
+    public int probability;
 
     private float timerShoot = 0f;
     private float timerStart = 0f; 
@@ -18,12 +20,25 @@ public class shoot : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-	    if (timerStart > delayStart)
+        if (timerStart > delayStart)
         {
             if (timerShoot > delayShoot)
             {
-                Instantiate(bullet, shooter.transform.position, shooter.transform.rotation);
-                timerShoot = 0f;
+                if (!random)
+                {
+                    Instantiate(bullet, shooter.transform.position, shooter.transform.rotation);
+                    timerShoot = 0f;
+                }
+                else
+                {
+                    timerShoot = 0f;
+                    int aux =  Random.Range(0, 100);
+                    if (aux < probability)
+                    {
+                        Debug.Log(aux);
+                        Instantiate(bullet, shooter.transform.position, shooter.transform.rotation);
+                    }
+                }
             }
             timerShoot += Time.deltaTime;
         }
