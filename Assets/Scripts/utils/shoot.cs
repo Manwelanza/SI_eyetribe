@@ -35,7 +35,6 @@ public class shoot : MonoBehaviour {
                     int aux =  Random.Range(0, 100);
                     if (aux < probability)
                     {
-                        Debug.Log(aux);
                         Instantiate(bullet, shooter.transform.position, shooter.transform.rotation);
                     }
                 }

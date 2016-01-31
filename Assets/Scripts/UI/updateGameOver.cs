@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class updateGameOver : MonoBehaviour {
@@ -7,11 +8,16 @@ public class updateGameOver : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        gameOver = GameObject.Find ("gameOver").GetComponent<Canvas> ();
+        gameOver = GetComponent<Canvas> ();
         gameOver.enabled = false;
 	}
 	
 	public static void show () {
         gameOver.enabled = true;
+    }
+
+    public void startGame()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }
