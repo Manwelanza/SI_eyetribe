@@ -3,38 +3,65 @@ using System.Collections;
 
 public class game : MonoBehaviour {
 
-    private static int lifes = 3;
+    private static int lives = 3;
     private static float timeScale;
-	// Use this for initialization
-	void Start () {
+
+    /// <summary>
+    /// Method to initialize
+    /// </summary>
+    void Start () {
         timeScale = Time.timeScale;
         updateLife.update();
     }
 	
+    /// <summary>
+    /// Method to kill the player 
+    /// </summary>
     public static void die ()
     {
-        if (lifes > 0)
+        if (lives > 0)
         {
-            lifes--;
+            lives--;
             updateLife.update();
         }
 
-        if (lifes <= 0)
+        if (lives <= 0)
         {
             gameOver();
         }
     }
 
+    /// <summary>
+    /// Method to end the game
+    /// </summary>
     public static void gameOver ()
     {
-        lifes = 0;
+        lives = 0;
         updateLife.update();
         Time.timeScale = 0;
         updateGameOver.show();
     }
 
-    public static int getLifes ()
+    /// <summary>
+    /// Method to add one life
+    /// </summary>
+    public static void add ()
     {
-        return lifes;
+        if (lives < 3)
+        {
+            lives++;
+            updateLife.update();
+        }
+    }
+
+    /// <summary>
+    /// Method to return player lives
+    /// </summary>
+    /// <returns>
+    /// Player lives
+    /// </returns>
+    public static int getLives ()
+    {
+        return lives;
     }
 }

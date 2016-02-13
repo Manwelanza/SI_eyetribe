@@ -1,24 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Class to control all enemies
+/// </summary>
 public class enemy : MonoBehaviour {
 
     public int points = 10;
-    public float speed = 10f;
+    public static float speed;
     public float speedDown = 5f;
-    
+    public static int n_games = 1;
+
+    private Vector3 position;
     private static int n_enemies = 0;
     private static bool right = true;
     private static bool secure = false;
 
-	// Use this for initialization
-	void Start () {
-        n_enemies++;
-        speed = 50f;
+    /// <summary>
+    /// Method to initialize
+    /// </summary>
+    void Start () {
+        alive();
+        position = transform.position;
     }
-	
-	// Update is called once per frame
-	void FixedUpdate () {
+
+    /// <summary>
+    /// Method to be called every frame checking physics
+    /// </summary>
+    void FixedUpdate () {
         int aux;
         if (right)
         {
@@ -36,6 +45,9 @@ public class enemy : MonoBehaviour {
         }
 	}
 
+    /// <summary>
+    /// Method to move down all enemies
+    /// </summary>
     public void  moveDown ()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -45,6 +57,29 @@ public class enemy : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Method to update parameters when the enemy go alive
+    /// </summary>
+    public void alive ()
+    {
+        n_enemies++;
+        speed = 50 * n_games;
+    }
+
+    /// <summary>
+    /// Method to return the first position
+    /// </summary>
+    /// <returns>
+    /// First position of the enemy
+    /// </returns>
+    public Vector3 getFirstPosition ()
+    {
+        return position;
+    }
+
+    /// <summary>
+    /// Method to check collision vs righbodies
+    /// </summary>
     void OnCollisionEnter(Collision collider)
     {
         if (collider.collider.tag == "wall")
@@ -65,12 +100,36 @@ public class enemy : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Method to check collision vs triggers
+    /// </summary>
     void OnTriggerEnter(Collider collider)
     {
         if (collider.tag == "PlayerBullet")
         {
             updatePoints.add(points);
-            Destroy(this.gameObject); 
+            n_enemies--;
+
+            if (n_enemies == 1)
+            {
+                speed = speed * 2;
+                this.gameObject.SetActive(false);
+            }
+
+            else if (n_enemies <= 0)
+            {
+                n_games++;
+                reSpawn.revive ();
+                shoot.updateProbability();
+                game.add();
+            }
+
+            else
+            {
+                this.gameObject.SetActive(false);
+            }
+            
+            //Destroy(this.gameObject); 
         }
     }
 
