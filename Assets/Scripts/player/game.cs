@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SpaceInvaders;
 
 public class game : MonoBehaviour {
 
@@ -40,6 +41,18 @@ public class game : MonoBehaviour {
         updateLife.update();
         Time.timeScale = 0;
         updateGameOver.show();
+        Points.stateGame.Save(new PlayerPoint("Juan", updatePoints.getPoints()));
+    }
+
+    /// <summary>
+    /// Method to start the game
+    /// </summary>
+    public static void startGame ()
+    {
+        add();
+        add();
+        add();
+        Time.timeScale = timeScale;
     }
 
     /// <summary>

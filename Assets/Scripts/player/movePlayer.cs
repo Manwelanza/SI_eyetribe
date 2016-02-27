@@ -52,6 +52,12 @@ public class movePlayer : MonoBehaviour
             }
         }
 
+        // QUITAR
+        if (Input.GetKeyDown (KeyCode.M))
+        {
+            game.gameOver();
+        }
+
 
     }
 
