@@ -13,10 +13,6 @@ public class CanvasPointController : MonoBehaviour {
     private void LoadData ()
     {
         Text[] textos = GetComponentsInChildren<Text>();
-        if (textos.Length > 1)
-        {
-            Debug.Log("Comprobar esto");
-        }
 
         Points.stateGame.Load();
         textos[1].text = Points.stateGame.getNames();
