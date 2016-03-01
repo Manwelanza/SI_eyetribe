@@ -9,6 +9,7 @@ public class updateMainMenu : MonoBehaviour {
     /// </summary>
     public void startLevel ()
     {
+        Debug.Log("spòdf <sdulkovgpfñsdxhi fñplgers .");
         SceneManager.LoadScene("Nivel_1");
     }
 

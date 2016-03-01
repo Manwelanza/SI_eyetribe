@@ -38,7 +38,7 @@ public class game : MonoBehaviour {
     {
         lives = 0;
         updateLife.update();
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         updateGameOver.show();
     }
 
@@ -50,7 +50,7 @@ public class game : MonoBehaviour {
         add();
         add();
         add();
-        Time.timeScale = timeScale;
+        //Time.timeScale = timeScale;
     }
 
     /// <summary>
