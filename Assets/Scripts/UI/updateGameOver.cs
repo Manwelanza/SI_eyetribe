@@ -92,7 +92,7 @@ public class updateGameOver : MonoBehaviour {
 
     void Update ()
     {
-        if (gameOver.enabled)
+        if (gameOver.enabled && !visualKeyboard.activeSelf)
         {
             GraphicRaycaster graphic = this.GetComponent<GraphicRaycaster>();
             PointerEventData point = new PointerEventData(null);

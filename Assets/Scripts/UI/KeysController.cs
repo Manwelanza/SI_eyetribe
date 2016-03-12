@@ -4,6 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
+public enum eTiposLayers_Game
+{
+    UI = 5
+}
+
 public class KeysController : MonoBehaviour {
     public float timeLimit = 0.5f;
     public VisualKeyboardController interfaz;
@@ -24,9 +29,9 @@ public class KeysController : MonoBehaviour {
         objectObserved = null;
         text = "";
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
         if (active)
         {
             GraphicRaycaster graphic = this.GetComponent<GraphicRaycaster>();
@@ -34,6 +39,7 @@ public class KeysController : MonoBehaviour {
             point.position = Input.mousePosition;
             List<RaycastResult> results = new List<RaycastResult>();
             graphic.Raycast(point, results);
+            bool anyItem = false;
 
             EventSystem.current.RaycastAll(point, results);
             if (results.Count > 0)
@@ -48,38 +54,70 @@ public class KeysController : MonoBehaviour {
                             {
                                 if (objectObserved.name == "ENTER")
                                 {
+                                    anyItem = true;
                                     interfaz.EndVisualKeyboard();
                                     counter = 0;
                                     break;
                                 }
                                 else if (objectObserved.name == "REMOVE")
                                 {
+                                    anyItem = true;
                                     text = text.Substring(0, text.Length - 1);
-                                    counter /= 2;
+                                    counter /= 3;
                                     break;
                                 }
                                 else if (objectObserved.name == "REMOVE_ALL")
                                 {
+                                    anyItem = true;
                                     text = "";
                                     counter = 0;
                                     break;
                                 }
                                 else
                                 {
-                                    text += results[i].gameObject.GetComponentInChildren<Text>().text;
-                                    counter = 0;
-                                    break;
+                                    if (results[i].gameObject.name != "continue" &&
+                                        results[i].gameObject.name != "Button")
+                                    {
+                                        anyItem = true;
+                                        text += results[i].gameObject.GetComponentInChildren<Text>().text;
+                                        counter = -0.1f;
+                                        try
+                                        {
+                                            objectObserved.GetComponent<KeyController>().DisableFeedBack();
+                                        }
+                                        catch (System.Exception excepcion)
+                                        {
+
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                             else
                             {
-                               
+                                anyItem = true;
                                 counter += Time.deltaTime;
+                                try
+                                {
+                                    objectObserved.GetComponent<KeyController>().FeedBack();
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
                                 break;
                             }
                         }
                         else
                         {
+                            try
+                            {
+                                objectObserved.GetComponent<KeyController>().DisableFeedBack();
+                            }
+                            catch (System.Exception excepcion)
+                            {
+
+                            }
                             Debug.Log("Cambio de objeto");
                             counter = Time.deltaTime;
                             objectObserved = results[i].gameObject;
@@ -92,6 +130,7 @@ public class KeysController : MonoBehaviour {
                         //counter = 0f;
                         //objectObserved = null;
                         //break;
+                        
                     }
                 }
             }
@@ -99,8 +138,21 @@ public class KeysController : MonoBehaviour {
             {
                 Debug.Log(results.Count);
             }
+
+            if (!anyItem)
+            {
+                try
+                {
+                    objectObserved.GetComponent<KeyController>().DisableFeedBack();
+                }
+                catch (System.Exception excepcion)
+                {
+
+                }
+            }
         }
 	}
+
 
     public void TurnOnVisualKeyboard ()
     {
