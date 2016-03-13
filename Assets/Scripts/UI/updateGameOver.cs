@@ -111,18 +111,59 @@ public class updateGameOver : MonoBehaviour {
                         {
                             if (counter >= timeLimit)
                             {
+                                try
+                                {
+                                    objectObserved.GetComponentsInChildren<Image>()[0].color = Color.white;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
                                 showVisualKeyboard();
                                 counter = 0f;
                                 break;
                             }
                             else
                             {
+                                try
+                                {
+                                    objectObserved.GetComponentsInChildren<Image>()[0].color = Color.green;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
                                 counter += Time.deltaTime;
                                 break;
                             }
                         }
+
+                        else if (objectObserved!= null)
+                        {
+                            if (objectObserved.name == "continue")
+                            {
+                                try
+                                {
+                                    GetComponent<Text>().color = Color.white;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
+                            }
+
+                        }
+
                         else
                         {
+                            try
+                            {
+                                objectObserved.GetComponentsInChildren<Image>()[0].color = Color.white;
+                            }
+                            catch (System.Exception excepcion)
+                            {
+
+                            }
                             objectObserved = results[i].gameObject;
                             counter = 0;
                             break;
@@ -135,6 +176,14 @@ public class updateGameOver : MonoBehaviour {
                         {
                             if (counter >= timeLimit)
                             {
+                                try
+                                {
+                                    GetComponent<Text>().color = Color.white;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
                                 gameOver.enabled = false;
                                 startGame();
                                 counter = 0f;
@@ -142,15 +191,76 @@ public class updateGameOver : MonoBehaviour {
                             }
                             else
                             {
+                                try
+                                {
+                                    GetComponent<Text>().color = Color.green;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
                                 counter += Time.deltaTime;
                                 break;
                             }
                         }
+                        else if (objectObserved != null)
+                        {
+                            if (objectObserved.name == "Button")
+                            {
+                                try
+                                {
+                                    objectObserved.GetComponentsInChildren<Image>()[0].color = Color.white;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
+                            }
+                                
+                        }
                         else
                         {
+                            try
+                            {
+                                GetComponent<Text>().color = Color.white;
+                            }
+                            catch (System.Exception excepcion)
+                            {
+
+                            }
                             objectObserved = results[i].gameObject;
                             counter = 0;
                             break;
+                        }
+                    }
+                    else
+                    {
+                        counter = 0;
+                        if (objectObserved != null)
+                        {
+                            if (objectObserved.name == "Button")
+                            {
+                                try
+                                {
+                                    objectObserved.GetComponentsInChildren<Image>()[0].color = Color.white;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
+                            }
+
+                            else if (objectObserved.name == "continue")
+                            {
+                                try
+                                {
+                                    GetComponent<Text>().color = Color.white;
+                                }
+                                catch (System.Exception excepcion)
+                                {
+
+                                }
+                            }
                         }
                     }
                 }
