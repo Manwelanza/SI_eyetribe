@@ -16,7 +16,7 @@ public class BotonController : MonoBehaviour {
 
     public void FeedBack()
     {
-        if (gameObject.name == "exit")
+        if (gameObject.name == "exit" || gameObject.name == "delete")
         {
             GetComponent<Text>().color = Color.red;
         }
