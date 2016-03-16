@@ -22,6 +22,13 @@ public class enemy : MonoBehaviour {
     void Start () {
         alive();
         position = transform.position;
+        n_games = 1;
+    }
+
+    
+    public static void gameOver ()
+    {
+        n_enemies = 0;
     }
 
     /// <summary>

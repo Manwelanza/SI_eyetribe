@@ -38,6 +38,7 @@ public class game : MonoBehaviour {
     {
         lives = 0;
         updateLife.update();
+        enemy.gameOver();
         //Time.timeScale = 0;
         updateGameOver.show();
     }
