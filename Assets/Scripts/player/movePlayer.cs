@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TETCSharpClient;
+using TETCSharpClient.Data;
 
-public class movePlayer : MonoBehaviour
+public class movePlayer : MonoBehaviour, IGazeListener
 {
 
     public float speed = 10f;
@@ -22,25 +24,49 @@ public class movePlayer : MonoBehaviour
         shader = GetComponent<MeshRenderer>().material.shader;
         color = GetComponent<MeshRenderer>().material.color;
         invincibility = false;
+
+        GazeManager.Instance.Activate
+        (
+        GazeManager.ApiVersion.VERSION_1_0,
+        GazeManager.ClientMode.Push
+        );
+
+        GazeManager.Instance.AddGazeListener (this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 positionMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 positionPlayer = transform.position - new Vector3(diference, 0, 0);
-        Vector3 movement = new Vector3(speed * Time.deltaTime, 0, 0);
+        Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
+        Vector3 positionMouse;
+        if ( null != gazeCoords )
+        {
+            // Map gaze indicator
+            Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
 
-        if (positionMouse.x - positionPlayer.x > 1)
-        {
-            // Move Right
-            controller.Move(movement);
+            positionMouse = new Vector3 ((float)gp.X, (float)gp.Y, 0);
+            positionMouse = Camera.main.ScreenToWorldPoint (positionMouse);
         }
-        else if (positionMouse.x - positionPlayer.x < -1)
+
+        else
         {
-            // Move Left
-            controller.Move(-1 * movement);
+            positionMouse = Camera.main.ScreenToWorldPoint (Input.mousePosition);
         }
+
+            Vector3 positionPlayer = transform.position - new Vector3 (diference, 0, 0);
+            Vector3 movement = new Vector3 (speed * Time.deltaTime, 0, 0);
+
+            if ( positionMouse.x - positionPlayer.x > 1 )
+            {
+                // Move Right
+                controller.Move (movement);
+            }
+            else if ( positionMouse.x - positionPlayer.x < -1 )
+            {
+                // Move Left
+                controller.Move (-1 * movement);
+            }
+       
 
         if (invincibility)
         {
@@ -97,5 +123,17 @@ public class movePlayer : MonoBehaviour
             if (!invincibility)
                 die();
         }
+    }
+
+    public void OnGazeUpdate (GazeData gazeData)
+    {
+        //Add frame to GazeData cache handler
+        GazeDataValidator.Instance.Update (gazeData);
+    }
+
+    void OnApplicationQuit ()
+    {
+        GazeManager.Instance.RemoveGazeListener (this);
+        GazeManager.Instance.Deactivate ();
     }
 }
