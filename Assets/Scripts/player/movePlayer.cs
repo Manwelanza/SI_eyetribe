@@ -39,29 +39,34 @@ public class movePlayer : MonoBehaviour, IGazeListener
     {
         Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
         Vector3 positionMouse;
+        Vector3 positionCamera = GameObject.Find ("Main Camera").transform.position;
+        if (positionCamera == null)
+        {
+            throw new System.ArgumentException ("Camera not found");
+        }
         if ( null != gazeCoords )
         {
             // Map gaze indicator
             Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
-
             positionMouse = new Vector3 ((float)gp.X, (float)gp.Y, 0);
             positionMouse = Camera.main.ScreenToWorldPoint (positionMouse);
         }
 
         else
         {
-            positionMouse = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+            positionMouse = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, positionCamera.z));
         }
 
             Vector3 positionPlayer = transform.position - new Vector3 (diference, 0, 0);
             Vector3 movement = new Vector3 (speed * Time.deltaTime, 0, 0);
+            float aux = GetComponent<Renderer> ().bounds.extents.x;
 
-            if ( positionMouse.x - positionPlayer.x > 1 )
+            if ( positionMouse.x - positionPlayer.x > (aux/10))
             {
                 // Move Right
                 controller.Move (movement);
             }
-            else if ( positionMouse.x - positionPlayer.x < -1 )
+            else if ( positionMouse.x - positionPlayer.x < -aux/1.5)
             {
                 // Move Left
                 controller.Move (-1 * movement);
