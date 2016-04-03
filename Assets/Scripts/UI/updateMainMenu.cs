@@ -5,13 +5,30 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Collections;
+using TETCSharpClient;
+using TETCSharpClient.Data;
 
-public class updateMainMenu : MonoBehaviour {
+public class updateMainMenu : MonoBehaviour, IGazeListener
+{
 
     public float timeLimit = 0.5f;
     public GameObject objectObserved = null;
 
     private float counter = 0f;
+
+    void Start ()
+    {
+        if ( !GazeManager.Instance.IsActivated )
+        {
+            GazeManager.Instance.Activate
+            (
+             GazeManager.ApiVersion.VERSION_1_0,
+             GazeManager.ClientMode.Push
+            );
+        }
+
+        GazeManager.Instance.AddGazeListener (this);
+    }
 
     /// <summary>
     /// Method to start the game
@@ -41,7 +58,24 @@ public class updateMainMenu : MonoBehaviour {
     {
         GraphicRaycaster graphic = this.GetComponent<GraphicRaycaster>();
         PointerEventData point = new PointerEventData(null);
-        point.position = Input.mousePosition;
+
+        Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
+        Camera Camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+        if ( Camera == null )
+        {
+            throw new System.ArgumentException ("Camera not found");
+        }
+        if ( null != gazeCoords )
+        {
+            // Map gaze indicator
+            Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
+            point.position = new Vector3 ((float)gp.X, (float)gp.Y, Camera.nearClipPlane + 1f);
+        }
+        else
+        {
+            point.position = Input.mousePosition;
+        }
+
         List<RaycastResult> results = new List<RaycastResult>();
         graphic.Raycast(point, results);
 
@@ -134,16 +168,72 @@ public class updateMainMenu : MonoBehaviour {
                         break;
                     }
                 }
+
+                else if ( results [i].gameObject.name == "Toggle" )
+                {
+                    if ( objectObserved == results [i].gameObject )
+                    {
+                        if ( counter >= timeLimit )
+                        {
+                            if ( Points.stateGame.saveData == false )
+                                objectObserved.GetComponentInChildren<Toggle> ().isOn = true;
+                            else
+                                objectObserved.GetComponentInChildren<Toggle> ().isOn = false;
+
+                            //Points.stateGame.OnPressedToggle ();
+                            counter = 0;
+                            break;
+                        }
+                        else
+                        {
+                            counter += Time.deltaTime;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        counter = 0;
+                        if ( objectObserved != null )
+                        {
+                            objectObserved.GetComponent<BotonController> ().DisableFeedBack ();
+                        }
+                        objectObserved = results [i].gameObject;
+                        results [i].gameObject.GetComponent<BotonController> ().FeedBack ();
+                        break;
+                    }
+                }
+
                 else
                 {
-                    if (objectObserved != null)
+                    if ( objectObserved != null )
                     {
-                        objectObserved.GetComponent<BotonController>().DisableFeedBack();
+                        objectObserved.GetComponent<BotonController> ().DisableFeedBack ();
+                        if (objectObserved.gameObject.name != "Toggle" )
+                        {
+                            counter = 0;
+                            objectObserved = null;
+                        }
                     }
-                    counter = 0;
-                    objectObserved = null;
+                    else
+                    {
+                        counter = 0;
+                        objectObserved = null;
+                    }
+                    
                 }
             }
         }
+    }
+
+    public void OnGazeUpdate (GazeData gazeData)
+    {
+        //Add frame to GazeData cache handler
+        GazeDataValidator.Instance.Update (gazeData);
+    }
+
+    void OnApplicationQuit ()
+    {
+        GazeManager.Instance.RemoveGazeListener (this);
+        GazeManager.Instance.Deactivate ();
     }
 }

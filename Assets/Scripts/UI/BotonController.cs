@@ -6,7 +6,14 @@ public class BotonController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        GetComponent<Text>().color = Color.white;
+        if ( gameObject.name == "Toggle" )
+        {
+            GetComponentsInChildren<Text> ()[1].color = Color.white;
+        }
+        else
+        {
+            GetComponent<Text> ().color = Color.white;
+        }
     }
 	
 	// Update is called once per frame
@@ -20,6 +27,10 @@ public class BotonController : MonoBehaviour {
         {
             GetComponent<Text>().color = Color.red;
         }
+        else if (gameObject.name == "Toggle")
+        {
+            GetComponentsInChildren<Text> ()[1].color = Color.green;
+        }
         else
         {
             GetComponent<Text>().color = Color.green;
@@ -28,6 +39,13 @@ public class BotonController : MonoBehaviour {
 
     public void DisableFeedBack()
     {
-        GetComponent<Text>().color = Color.white;
+        if ( gameObject.name == "Toggle" )
+        {
+            GetComponentsInChildren<Text> () [1].color = Color.white;
+        }
+        else
+        {
+            GetComponent<Text> ().color = Color.white;
+        }
     }
 }

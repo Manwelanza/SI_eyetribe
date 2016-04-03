@@ -3,13 +3,16 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using TETCSharpClient;
+using TETCSharpClient.Data;
 
 public enum eTiposLayers_Game
 {
     UI = 5
 }
 
-public class KeysController : MonoBehaviour {
+public class KeysController : MonoBehaviour, IGazeListener
+{
     public float timeLimit = 0.5f;
     public VisualKeyboardController interfaz;
 
@@ -30,13 +33,45 @@ public class KeysController : MonoBehaviour {
         text = "";
 	}
 
+    void Start ()
+    {
+        if ( !GazeManager.Instance.IsActivated )
+        {
+            GazeManager.Instance.Activate
+            (
+             GazeManager.ApiVersion.VERSION_1_0,
+             GazeManager.ClientMode.Push
+            );
+        }
+
+        GazeManager.Instance.AddGazeListener (this);
+    }
+
     // Update is called once per frame
     void Update () {
         if (active)
         {
             GraphicRaycaster graphic = this.GetComponent<GraphicRaycaster>();
             PointerEventData point = new PointerEventData(null);
-            point.position = Input.mousePosition;
+
+            Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
+            Camera Camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+            if ( Camera == null )
+            {
+                throw new System.ArgumentException ("Camera not found");
+            }
+            if ( null != gazeCoords )
+            {
+                // Map gaze indicator
+                Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
+                point.position = new Vector3 ((float)gp.X, (float)gp.Y, Camera.nearClipPlane + 1f);
+            }
+            else
+            {
+                point.position = Input.mousePosition;
+            }
+
+
             List<RaycastResult> results = new List<RaycastResult>();
             graphic.Raycast(point, results);
             bool anyItem = false;
@@ -167,5 +202,17 @@ public class KeysController : MonoBehaviour {
     public string getText ()
     {
         return text;
+    }
+
+    public void OnGazeUpdate (GazeData gazeData)
+    {
+        //Add frame to GazeData cache handler
+        GazeDataValidator.Instance.Update (gazeData);
+    }
+
+    void OnApplicationQuit ()
+    {
+        GazeManager.Instance.RemoveGazeListener (this);
+        GazeManager.Instance.Deactivate ();
     }
 }

@@ -9,13 +9,18 @@ using SpaceInvaders;
 public class Points : MonoBehaviour {
 
     private ArrayList playerPoints;
+    private MedicData medicData;
     private static string fileWay;
+    private static string medicFileWay;
+    private StreamWriter stream = null;
+    public bool saveData = true;
     public static Points stateGame;
 
 	// Use this for initialization
 	void Awake () {
         playerPoints = new ArrayList();
         fileWay = Application.persistentDataPath + "/points.dat";
+        medicFileWay = Application.persistentDataPath + "/MedicData.txt";
 
         #region "Singleton method"
         if (stateGame == null)
@@ -28,6 +33,25 @@ public class Points : MonoBehaviour {
             Destroy(gameObject);
         }
         #endregion
+    }
+
+    void Start ()
+    {
+        try
+        {
+            if ( stream == null )
+            {
+                stream = File.AppendText (medicFileWay);
+            }
+        }
+        catch ( IOException exception )
+        {
+            Debug.LogError ("Error opening the medic file: " + exception.Message);
+        }
+        catch ( NotSupportedException exception )
+        {
+            Debug.LogError ("Unknown Error: " + exception.Message);
+        }
     }
 
     // Update is called once per frame
@@ -89,9 +113,18 @@ public class Points : MonoBehaviour {
         }
         catch (IOException exception)
         {
-            Debug.Log("Error saving: " + exception.Message);
+            Debug.LogError("Error saving: " + exception.Message);
         }
         
+    }
+
+    /// <summary>
+    /// Method to save eyes positions in a file
+    /// </summary>
+    /// <param name="data">Data to save</param>
+    public void Save (float x, float y)
+    {
+        stream.WriteLine (x + "," + y);
     }
 
     /// <summary>
@@ -119,7 +152,7 @@ public class Points : MonoBehaviour {
         }
         catch (IOException exception)
         {
-            Debug.Log("Error loading: " + exception.Message);
+            Debug.LogError("Error loading: " + exception.Message);
         }
     }
 
@@ -145,6 +178,8 @@ public class Points : MonoBehaviour {
         }
     }
 
+
+
     [Serializable]
     class Data2Save
     {
@@ -154,5 +189,21 @@ public class Points : MonoBehaviour {
         {
             this.points2Save = points2Save;
         }
+    }
+
+    void OnApplicationQuit ()
+    {
+        Debug.Log ("Salio");
+        if (stream != null)
+        {
+            stream.Close ();
+        }
+    }
+
+    public void OnPressedToggle ()
+    {
+        Debug.Log ("ENTRO");
+        if ( saveData ) saveData = false;
+        else saveData = true;
     }
 }

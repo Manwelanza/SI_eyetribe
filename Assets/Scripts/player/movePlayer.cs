@@ -25,11 +25,14 @@ public class movePlayer : MonoBehaviour, IGazeListener
         color = GetComponent<MeshRenderer>().material.color;
         invincibility = false;
 
-        GazeManager.Instance.Activate
-        (
-        GazeManager.ApiVersion.VERSION_1_0,
-        GazeManager.ClientMode.Push
-        );
+        if (!GazeManager.Instance.IsActivated)
+        {
+            GazeManager.Instance.Activate
+            (
+             GazeManager.ApiVersion.VERSION_1_0,
+             GazeManager.ClientMode.Push
+            );
+        }
 
         GazeManager.Instance.AddGazeListener (this);
     }
@@ -50,6 +53,8 @@ public class movePlayer : MonoBehaviour, IGazeListener
             Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
             positionMouse = new Vector3 ((float)gp.X, (float)gp.Y, 0);
             positionMouse = Camera.main.ScreenToWorldPoint (positionMouse);
+            if (Points.stateGame.saveData)
+                Points.stateGame.Save ((float)gp.X, (float)gp.Y);
         }
 
         else
