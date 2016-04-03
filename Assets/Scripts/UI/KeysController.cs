@@ -11,7 +11,7 @@ public enum eTiposLayers_Game
     UI = 5
 }
 
-public class KeysController : MonoBehaviour, IGazeListener
+public class KeysController : MonoBehaviour//, IGazeListener
 {
     public float timeLimit = 0.5f;
     public VisualKeyboardController interfaz;
@@ -35,7 +35,7 @@ public class KeysController : MonoBehaviour, IGazeListener
 
     void Start ()
     {
-        if ( !GazeManager.Instance.IsActivated )
+        /*if ( !GazeManager.Instance.IsActivated )
         {
             GazeManager.Instance.Activate
             (
@@ -44,39 +44,16 @@ public class KeysController : MonoBehaviour, IGazeListener
             );
         }
 
-        GazeManager.Instance.AddGazeListener (this);
+        GazeManager.Instance.AddGazeListener (this);*/
     }
 
     // Update is called once per frame
     void Update () {
         if (active)
         {
-            GraphicRaycaster graphic = this.GetComponent<GraphicRaycaster>();
-            PointerEventData point = new PointerEventData(null);
-
-            Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
-            Camera Camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
-            if ( Camera == null )
-            {
-                throw new System.ArgumentException ("Camera not found");
-            }
-            if ( null != gazeCoords )
-            {
-                // Map gaze indicator
-                Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
-                point.position = new Vector3 ((float)gp.X, (float)gp.Y, Camera.nearClipPlane + 1f);
-            }
-            else
-            {
-                point.position = Input.mousePosition;
-            }
-
-
-            List<RaycastResult> results = new List<RaycastResult>();
-            graphic.Raycast(point, results);
+            List<RaycastResult> results = Controller.Instance.Raycast2Canvas(this.gameObject);
             bool anyItem = false;
 
-            EventSystem.current.RaycastAll(point, results);
             if (results.Count > 0)
             {
                 for (int i = 0; i < results.Count; i++)
@@ -204,7 +181,7 @@ public class KeysController : MonoBehaviour, IGazeListener
         return text;
     }
 
-    public void OnGazeUpdate (GazeData gazeData)
+    /*public void OnGazeUpdate (GazeData gazeData)
     {
         //Add frame to GazeData cache handler
         GazeDataValidator.Instance.Update (gazeData);
@@ -214,5 +191,5 @@ public class KeysController : MonoBehaviour, IGazeListener
     {
         GazeManager.Instance.RemoveGazeListener (this);
         GazeManager.Instance.Deactivate ();
-    }
+    }*/
 }

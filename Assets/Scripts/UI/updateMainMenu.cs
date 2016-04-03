@@ -8,7 +8,7 @@ using System.Collections;
 using TETCSharpClient;
 using TETCSharpClient.Data;
 
-public class updateMainMenu : MonoBehaviour, IGazeListener
+public class updateMainMenu : MonoBehaviour
 {
 
     public float timeLimit = 0.5f;
@@ -18,16 +18,16 @@ public class updateMainMenu : MonoBehaviour, IGazeListener
 
     void Start ()
     {
-        if ( !GazeManager.Instance.IsActivated )
+        /*if ( !GazeManager.Instance.IsActivated )
         {
             GazeManager.Instance.Activate
             (
              GazeManager.ApiVersion.VERSION_1_0,
              GazeManager.ClientMode.Push
             );
-        }
+        }*/
 
-        GazeManager.Instance.AddGazeListener (this);
+        //GazeManager.Instance.AddGazeListener (this);
     }
 
     /// <summary>
@@ -56,30 +56,8 @@ public class updateMainMenu : MonoBehaviour, IGazeListener
 
     void Update()
     {
-        GraphicRaycaster graphic = this.GetComponent<GraphicRaycaster>();
-        PointerEventData point = new PointerEventData(null);
+        List<RaycastResult> results = Controller.Instance.Raycast2Canvas(this.gameObject);
 
-        Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
-        Camera Camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
-        if ( Camera == null )
-        {
-            throw new System.ArgumentException ("Camera not found");
-        }
-        if ( null != gazeCoords )
-        {
-            // Map gaze indicator
-            Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
-            point.position = new Vector3 ((float)gp.X, (float)gp.Y, Camera.nearClipPlane + 1f);
-        }
-        else
-        {
-            point.position = Input.mousePosition;
-        }
-
-        List<RaycastResult> results = new List<RaycastResult>();
-        graphic.Raycast(point, results);
-
-        EventSystem.current.RaycastAll(point, results);
         if (results.Count > 0)
         {
             for (int i = 0; i < results.Count; i++)
@@ -225,15 +203,15 @@ public class updateMainMenu : MonoBehaviour, IGazeListener
         }
     }
 
-    public void OnGazeUpdate (GazeData gazeData)
+    /*public void OnGazeUpdate (GazeData gazeData)
     {
         //Add frame to GazeData cache handler
         GazeDataValidator.Instance.Update (gazeData);
-    }
+    }*/
 
-    void OnApplicationQuit ()
+    /*void OnApplicationQuit ()
     {
         GazeManager.Instance.RemoveGazeListener (this);
         GazeManager.Instance.Deactivate ();
-    }
+    }*/
 }

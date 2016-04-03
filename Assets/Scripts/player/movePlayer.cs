@@ -3,7 +3,7 @@ using System.Collections;
 using TETCSharpClient;
 using TETCSharpClient.Data;
 
-public class movePlayer : MonoBehaviour, IGazeListener
+public class movePlayer : MonoBehaviour//, IGazeListener
 {
 
     public float speed = 10f;
@@ -25,7 +25,7 @@ public class movePlayer : MonoBehaviour, IGazeListener
         color = GetComponent<MeshRenderer>().material.color;
         invincibility = false;
 
-        if (!GazeManager.Instance.IsActivated)
+        /*if (!GazeManager.Instance.IsActivated)
         {
             GazeManager.Instance.Activate
             (
@@ -34,34 +34,13 @@ public class movePlayer : MonoBehaviour, IGazeListener
             );
         }
 
-        GazeManager.Instance.AddGazeListener (this);
+        GazeManager.Instance.AddGazeListener (this);*/
     }
 
     // Update is called once per frame
     void Update()
     {
-        Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
-        Vector3 positionMouse;
-        Vector3 positionCamera = GameObject.Find ("Main Camera").transform.position;
-        if (positionCamera == null)
-        {
-            throw new System.ArgumentException ("Camera not found");
-        }
-        if ( null != gazeCoords )
-        {
-            // Map gaze indicator
-            Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
-            positionMouse = new Vector3 ((float)gp.X, (float)gp.Y, 0);
-            positionMouse = Camera.main.ScreenToWorldPoint (positionMouse);
-            if (Points.stateGame.saveData)
-                Points.stateGame.Save ((float)gp.X, (float)gp.Y);
-        }
-
-        else
-        {
-            positionMouse = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, positionCamera.z));
-        }
-
+            Vector3 positionMouse = Controller.Instance.GetPosition();
             Vector3 positionPlayer = transform.position - new Vector3 (diference, 0, 0);
             Vector3 movement = new Vector3 (speed * Time.deltaTime, 0, 0);
             float aux = GetComponent<Renderer> ().bounds.extents.x;
@@ -135,7 +114,7 @@ public class movePlayer : MonoBehaviour, IGazeListener
         }
     }
 
-    public void OnGazeUpdate (GazeData gazeData)
+    /*public void OnGazeUpdate (GazeData gazeData)
     {
         //Add frame to GazeData cache handler
         GazeDataValidator.Instance.Update (gazeData);
@@ -145,5 +124,5 @@ public class movePlayer : MonoBehaviour, IGazeListener
     {
         GazeManager.Instance.RemoveGazeListener (this);
         GazeManager.Instance.Deactivate ();
-    }
+    }*/
 }
