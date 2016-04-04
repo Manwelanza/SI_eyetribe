@@ -11,7 +11,6 @@ public class Controller : MonoBehaviour, IGazeListener
     public static Controller Instance;
 	// Use this for initialization
 	void Start () {
-
         #region "Singleton method"
         if (Instance == null)
         {
@@ -106,4 +105,5 @@ public class Controller : MonoBehaviour, IGazeListener
         GazeManager.Instance.RemoveGazeListener (this);
         GazeManager.Instance.Deactivate ();
     }
+
 }
