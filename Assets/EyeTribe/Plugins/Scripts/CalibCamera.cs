@@ -11,6 +11,7 @@ using System.Collections;
 using TETCSharpClient;
 using TETCSharpClient.Data;
 using System;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 /// <summary>
@@ -68,12 +69,15 @@ public class CalibCamera : MonoBehaviour, IGazeListener, ICalibrationProcessHand
         _CallbackQueue = new Queue<Callback>();
 
         //activate C# TET client, default port
-        GazeManager.Instance.Activate
-        (
-            GazeManager.ApiVersion.VERSION_1_0,
-            GazeManager.ClientMode.Push
-        );
-
+        if (!GazeManager.Instance.IsActivated)
+        {
+            GazeManager.Instance.Activate
+                    (
+                        GazeManager.ApiVersion.VERSION_1_0,
+                        GazeManager.ClientMode.Push
+                    );
+        }
+        
         //register for gaze updates
         GazeManager.Instance.AddGazeListener(this);
     }
@@ -195,19 +199,22 @@ public class CalibCamera : MonoBehaviour, IGazeListener, ICalibrationProcessHand
         {
             int width = (int)(Screen.width * .2f);
             int height = (int)(Screen.height * .2f);
+            int backgroundHeight = (int)(Screen.height * .51f);
             int btnPadding = (int)(height * .3f);
             btnHeight = height - btnPadding - btnPadding;
             btnWidth = width - btnPadding - btnPadding;
             int x = (int)((Screen.width - width) / 2);
             height = btnPadding + ((btnHeight + btnPadding) * numBtns); //adjust size to num btns
             int y = (int)((Screen.height - height) / 2);
+            int textY = (int)((Screen.height - height) / 3);
 
             string boxText = "The Eye Tribe - Unity\n";
-
+            string btnText;
             //add calibration rating if available
             if (GazeManager.Instance.IsCalibrated)
             {
                 y += 10;
+                textY += 10;
 
                 string calibText;
                 int rating;
@@ -216,11 +223,11 @@ public class CalibCamera : MonoBehaviour, IGazeListener, ICalibrationProcessHand
                 boxText += "\nCalibration Result: " + calibText;
             }
 
-            GUI.Box(new Rect(x, y, width, height), boxText);
+            GUI.Box(new Rect(x, textY, width, backgroundHeight), boxText);
 
             if (!GazeManager.Instance.IsActivated)
             {
-                String btnText = "Reconnect to server";
+                 btnText = "Reconnect to server";
 
                 if (GUI.Button(new Rect(x + btnPadding, y + btnPadding, btnWidth, btnHeight), btnText))
                 {
@@ -235,9 +242,9 @@ public class CalibCamera : MonoBehaviour, IGazeListener, ICalibrationProcessHand
                 y += (btnPadding + btnHeight);
             }
 
-            if (!GazeManager.Instance.IsCalibrating)
+            if (GazeManager.Instance.IsActivated && !GazeManager.Instance.IsCalibrating)
             {
-                String btnText = GazeManager.Instance.IsCalibrated ? "Re-Calibrate" : "Calibrate";
+                btnText = GazeManager.Instance.IsCalibrated ? "Re-Calibrate" : "Calibrate";
 
                 if (GUI.Button(new Rect(x + btnPadding, y + btnPadding, btnWidth, btnHeight), btnText))
                 {
@@ -249,15 +256,14 @@ public class CalibCamera : MonoBehaviour, IGazeListener, ICalibrationProcessHand
                 y += (btnPadding + btnHeight);
             }
 
-            if (GazeManager.Instance.IsCalibrated && !GazeManager.Instance.IsCalibrating)
-            {
-                String btnText = "Start Demo Scene";
+
+                btnText = "Start Game (mouse)";
 
                 if (GUI.Button(new Rect(x + btnPadding, y + btnPadding, btnWidth, btnHeight), btnText))
                 {
-                    Application.LoadLevel(1);
+                    Controller.Instance.mouse = true;
+                    SceneManager.LoadScene ("MainMenu");
                 }
-            }
         }
 
         btnWidth = 160;
@@ -330,7 +336,8 @@ public class CalibCamera : MonoBehaviour, IGazeListener, ICalibrationProcessHand
                 //Handle on main UI thread
                 QueueCallback(new Callback(delegate
                 {
-                    Application.LoadLevel(1);
+                    Controller.Instance.mouse = false;
+                    SceneManager.LoadScene ("MainMenu");
                 }));
             }
             else

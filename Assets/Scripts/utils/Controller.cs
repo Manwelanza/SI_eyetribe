@@ -9,6 +9,8 @@ using TETCSharpClient.Data;
 public class Controller : MonoBehaviour, IGazeListener
 {
     public static Controller Instance;
+    public bool mouse { get; set; }
+
 	// Use this for initialization
 	void Start () {
         #region "Singleton method"
@@ -32,7 +34,8 @@ public class Controller : MonoBehaviour, IGazeListener
                 );
             }
 
-            GazeManager.Instance.AddGazeListener (this);
+        GazeManager.Instance.AddGazeListener (this);
+        mouse = false;
     }
 
 
@@ -40,15 +43,15 @@ public class Controller : MonoBehaviour, IGazeListener
     {
         GraphicRaycaster graphic = canvas.GetComponent<GraphicRaycaster>();
         PointerEventData point = new PointerEventData(null);
-
-        Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
-        Camera Camera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        if (Camera == null)
+        Camera Camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+        if ( Camera == null )
         {
-            throw new System.ArgumentException("Camera not found");
+            throw new System.ArgumentException ("Camera not found");
         }
-        if (null != gazeCoords)
+
+        if (!mouse )
         {
+            Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
             // Map gaze indicator
             Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords(gazeCoords);
             point.position = new Vector3((float)gp.X, (float)gp.Y, Camera.nearClipPlane + 1f);
@@ -69,21 +72,22 @@ public class Controller : MonoBehaviour, IGazeListener
 
     public Vector3 GetPosition ()
     {
-        Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
         Vector3 positionMouse;
-        Camera positionCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        if (positionCamera == null)
+        Camera positionCamera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+        if ( positionCamera == null )
         {
-            throw new System.ArgumentException("Camera not found");
+            throw new System.ArgumentException ("Camera not found");
         }
-        if (null != gazeCoords)
+
+        if (!mouse )
         {
+            Point2D gazeCoords = GazeDataValidator.Instance.GetLastValidSmoothedGazeCoordinates ();
             // Map gaze indicator
-            Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords(gazeCoords);
-            positionMouse = new Vector3((float)gp.X, (float)gp.Y, 0);
-            positionMouse = Camera.main.ScreenToWorldPoint(positionMouse);
-            if (Points.stateGame.saveData)
-                Points.stateGame.Save((float)gp.X, (float)gp.Y);
+            Point2D gp = UnityGazeUtils.GetGazeCoordsToUnityWindowCoords (gazeCoords);
+            positionMouse = new Vector3 ((float)gp.X, (float)gp.Y, 0);
+            positionMouse = Camera.main.ScreenToWorldPoint (positionMouse);
+            if ( Points.stateGame.saveData )
+                Points.stateGame.Save ((float)gp.X, (float)gp.Y);
         }
 
         else
