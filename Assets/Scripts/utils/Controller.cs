@@ -35,7 +35,7 @@ public class Controller : MonoBehaviour, IGazeListener
             }
 
         GazeManager.Instance.AddGazeListener (this);
-        mouse = false;
+        mouse = true;
     }
 
 

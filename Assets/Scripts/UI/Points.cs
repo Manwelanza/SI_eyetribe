@@ -21,6 +21,7 @@ public class Points : MonoBehaviour {
         playerPoints = new ArrayList();
         fileWay = Application.persistentDataPath + "/points.dat";
         medicFileWay = Application.persistentDataPath + "/MedicData.txt";
+        Debug.Log(medicFileWay);
 
         #region "Singleton method"
         if (stateGame == null)

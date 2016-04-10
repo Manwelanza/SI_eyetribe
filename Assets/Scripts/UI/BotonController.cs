@@ -8,7 +8,7 @@ public class BotonController : MonoBehaviour {
 	void Start () {
         if ( gameObject.name == "Toggle" )
         {
-            GetComponentsInChildren<Text> ()[1].color = Color.white;
+            //GetComponentsInChildren<Text> ()[1].color = Color.white;
         }
         else
         {
@@ -29,7 +29,7 @@ public class BotonController : MonoBehaviour {
         }
         else if (gameObject.name == "Toggle")
         {
-            GetComponentsInChildren<Text> ()[1].color = Color.green;
+           // GetComponentsInChildren<Text> ()[1].color = Color.green;
         }
         else
         {
@@ -41,7 +41,7 @@ public class BotonController : MonoBehaviour {
     {
         if ( gameObject.name == "Toggle" )
         {
-            GetComponentsInChildren<Text> () [1].color = Color.white;
+            //GetComponentsInChildren<Text> () [1].color = Color.white;
         }
         else
         {

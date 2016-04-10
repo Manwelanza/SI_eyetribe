@@ -153,12 +153,12 @@ public class updateMainMenu : MonoBehaviour
                     {
                         if ( counter >= timeLimit )
                         {
+                            
                             if ( Points.stateGame.saveData == false )
                                 objectObserved.GetComponentInChildren<Toggle> ().isOn = true;
                             else
                                 objectObserved.GetComponentInChildren<Toggle> ().isOn = false;
 
-                            //Points.stateGame.OnPressedToggle ();
                             counter = 0;
                             break;
                         }

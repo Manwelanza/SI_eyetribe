@@ -94,13 +94,8 @@ public class updateGameOver : MonoBehaviour {
     {
         if (gameOver.enabled && !visualKeyboard.activeSelf)
         {
-            GraphicRaycaster graphic = this.GetComponent<GraphicRaycaster>();
-            PointerEventData point = new PointerEventData(null);
-            point.position = Input.mousePosition;
-            List<RaycastResult> results = new List<RaycastResult>();
-            graphic.Raycast(point, results);
+            List<RaycastResult> results = Controller.Instance.Raycast2Canvas(this.gameObject);
 
-            EventSystem.current.RaycastAll(point, results);
             if (results.Count > 0)
             {
                 for (int i = 0; i < results.Count; i++)
